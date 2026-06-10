@@ -1,0 +1,566 @@
+/* =========================================================
+   💙 КЛАССИЧЕСКАЯ ТЕМНО-СИНЯЯ ТЕМА TELEGRAM С ГЛУБОКИМИ ГРАДИЕНТАМИ
+   ========================================================= */
+
+:root {
+    --bg-color: #151c26;      /* Глубокий темно-синий фон Telegram */
+    --card-bg: #1e2a38;       /* Более светлый сине-серый для карточек и окон */
+    --border-color: #2b3a4a;  /* Синие матовые границы */
+    --text-color: #f5f5f5;    /* Основной белый текст */
+    --accent-color: #2481cc;  /* Фирменный синий Telegram */
+    --accent-text: #ffffff;
+    --hint-color: #7e92a8;    /* Мягкий сине-серый для подсказок */
+    --danger-color: #ff453a;  /* Приятный красный */
+    --success-color: #30d158; /* Приятный зеленый */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 16px;
+    padding-bottom: 60px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Заголовок с сочным переливом */
+h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+    background: linear-gradient(135deg, #3390ec 0%, #8ac0ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.user-info {
+    font-size: 13px;
+    color: var(--hint-color);
+    margin-bottom: 20px;
+}
+
+/* 💎 iOS ПЕРЕКЛЮЧАТЕЛЬ С СОЧНЫМ СИНИМ ГРАДИЕНТОМ */
+.admin-toggle-container {
+    display: flex;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 3px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.toggle-btn {
+    flex: 1;
+    padding: 9px;
+    border: none;
+    background: none;
+    color: var(--hint-color);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 9px;
+    transition: background-color 0.12s, color 0.12s;
+}
+
+.toggle-btn.active {
+    background: linear-gradient(135deg, #2481cc, #3fa5ff); /* Сочный градиент */
+    color: var(--accent-text);
+    box-shadow: 0 3px 10px rgba(36, 129, 204, 0.35); /* Красивое свечение */
+}
+
+/* Горизонтальные теги категорий */
+.category-filters-container {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    scrollbar-width: none;
+}
+
+.category-filters-container::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-chip {
+    padding: 8px 14px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--hint-color);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.12s, color 0.12s;
+}
+
+/* Сочный градиент для активного тега вместо унылого белого цвета */
+.filter-chip.active {
+    background: linear-gradient(135deg, #2481cc, #3fa5ff);
+    color: var(--accent-text);
+    border-color: #3fa5ff;
+    box-shadow: 0 3px 8px rgba(36, 129, 204, 0.3);
+}
+
+/* Поиск */
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    box-sizing: border-box;
+    font-size: 15px;
+    outline: none;
+}
+
+.search-input:focus {
+    border-color: var(--accent-color);
+}
+
+/* 💎 ПРЕМИУМ-КАРТОЧКИ С ВЫРАЖЕННЫМ СИНЕ-УГОЛЬНЫМ ГРАДИЕНТОМ */
+.sub-card {
+    background: linear-gradient(135deg, #1c2734 0%, #2c3e53 100%);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    transition: transform 0.1s ease;
+    cursor: pointer;
+}
+
+.sub-card:active {
+    transform: scale(0.98);
+}
+
+.sub-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.price {
+    color: var(--success-color);
+}
+
+.sub-details {
+    font-size: 13px;
+    color: var(--hint-color);
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+    font-size: 12px;
+}
+
+.days-left {
+    font-weight: 600;
+    color: var(--danger-color);
+}
+
+/* 📦 МИНИ-КАРТОЧКА ПОДПИСКИ */
+.mini-sub-card {
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* Вкладки в админке */
+.admin-sub-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.sub-tab-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--hint-color);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sub-tab-btn.active {
+    background-color: var(--text-color);
+    color: var(--bg-color);
+    border-color: var(--text-color);
+}
+
+/* 📊 КОНТРАСТНЫЙ ДАШБОРД СТАТИСТКИ */
+.admin-stats-grid {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    flex: 1;
+    background: linear-gradient(135deg, #1f2c3a 0%, #30455b 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.stat-num {
+    display: block;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent-color);
+    margin-bottom: 2px;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: var(--hint-color);
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+/* ==========================================
+   💎 МОДАЛЬНОЕ ОКНО (ТЕМНО-СИНЯЯ ШТОРКА)
+   ========================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.65);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-out;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background-color: var(--bg-color);
+    width: calc(100% - 16px);
+    max-width: 500px;
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+    padding-top: 10px;
+    box-sizing: border-box;
+    transform: translateY(100%);
+    transition: transform 0.22s ease-out;
+    border-top: 1px solid var(--border-color);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
+}
+
+/* Полоска-ручка шторки сверху */
+.modal-handle {
+    width: 32px;
+    height: 4px;
+    background-color: var(--border-color);
+    border-radius: 2px;
+    margin: 0 auto 16px auto;
+}
+
+/* Компактные строки форм */
+.form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 11px;
+    color: var(--hint-color);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    box-sizing: border-box;
+    font-size: 15px;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: var(--accent-color);
+}
+
+.section-title {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--hint-color);
+    text-transform: uppercase;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 4px;
+}
+
+/* ⚙️ СЕТКА КНОПОК ДЕЙСТВИЙ С СОЧНЫМИ ГРАДИЕНТАМИ */
+.btn-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+/* 🔵 Сочный сине-лазурный градиент для кнопки сохранения изменений */
+.btn-primary {
+    background: linear-gradient(135deg, #2481cc, #3fa5ff);
+    color: var(--accent-text);
+    grid-column: span 2;
+    margin-bottom: 4px;
+    box-shadow: 0 4px 12px rgba(36, 129, 204, 0.3);
+}
+
+#btn-add-sub {
+    background: linear-gradient(135deg, #34a853, #54c272) !important;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3) !important;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ff453a, #ff6b6b);
+    color: white;
+    grid-column: span 2;
+    margin-bottom: 4px;
+    box-shadow: 0 4px 12px rgba(255, 69, 58, 0.25);
+}
+
+.btn-secondary {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.btn-close {
+    background-color: transparent;
+    color: var(--hint-color);
+    border: 1px solid var(--border-color);
+    grid-column: span 2;
+    margin-top: 6px;
+}
+
+/* Списки параметров */
+.param-list {
+    margin-bottom: 16px;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 2px 14px;
+}
+
+.param-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 13px;
+}
+
+.param-item:last-child {
+    border-bottom: none;
+}
+
+.param-label {
+    color: var(--hint-color);
+}
+
+.param-value {
+    font-weight: 600;
+}
+
+/* Бомбер */
+.checkbox-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+}
+
+.checkbox-container span {
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #485c70;
+    transition: .2s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .2s;
+    border-radius: 50%;
+}
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    z-index: 2000; /* Перекрывает всё */
+    box-sizing: border-box;
+}
+
+.login-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 24px;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+
+input:checked + .slider {
+    background-color: var(--accent-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+
+input[type="date"] {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+
+    /* 1. Центрируем текст по горизонтали и вертикали */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* 2. Сбрасываем стандартные стили iOS, которые ломают высоту и отступы */
+    -webkit-appearance: none;
+    appearance: none;
+    min-height: 44px; /* Подставьте точную высоту ваших соседних инпутов */
+
+    /* 3. Убираем дефолтные иконки календаря, если они сдвигают текст */
+    background-color: var(--card-bg);
+}
+
+/* 4. Полностью очищаем внутренние элементы инпута в WebKit (iOS / Safari) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-clear-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+

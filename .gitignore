@@ -1,0 +1,17 @@
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+gen/
+
+target/
+build/
+.gradle/
+
+src/main/resources/application.yml
+
+*.log
+*.zip
+
+ProjectMerger.java

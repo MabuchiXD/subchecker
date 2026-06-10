@@ -1,0 +1,1 @@
+ALTER TABLE subscription_members ADD COLUMN last_daily_notify_at TIMESTAMP;
