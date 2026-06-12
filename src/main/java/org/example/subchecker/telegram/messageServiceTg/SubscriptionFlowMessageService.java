@@ -1,6 +1,6 @@
 package org.example.subchecker.telegram.messageServiceTg;
 
-import org.example.subchecker.model.Currency;
+import org.example.subchecker.core.model.Currency;
 import org.example.subchecker.telegram.botKeyboards.ContextualKeyboards;
 import org.example.subchecker.telegram.botKeyboards.PrimaryKeyboards;
 import org.springframework.stereotype.Service;

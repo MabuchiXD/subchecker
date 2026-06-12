@@ -1,6 +1,6 @@
 package org.example.subchecker.telegram.messageServiceTg;
 
-import org.example.subchecker.dto.UserDTO;
+import org.example.subchecker.core.dto.UserDTO;
 import org.example.subchecker.telegram.botKeyboards.FamilyKeyboards;
 import org.example.subchecker.telegram.botKeyboards.PrimaryKeyboards;
 import org.springframework.stereotype.Service;

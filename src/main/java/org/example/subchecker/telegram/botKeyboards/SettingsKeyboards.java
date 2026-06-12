@@ -1,7 +1,7 @@
 package org.example.subchecker.telegram.botKeyboards;
 
-import org.example.subchecker.model.Currency;
-import org.example.subchecker.telegram.stateDiary.CallbackData;
+import org.example.subchecker.core.model.Currency;
+import org.example.subchecker.telegram.feature.stateDiary.CallbackData;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 

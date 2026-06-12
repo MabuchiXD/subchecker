@@ -2,9 +2,13 @@ package org.example.subchecker.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.example.subchecker.entity.*;
+import org.example.subchecker.core.entity.Subscription;
+import org.example.subchecker.core.entity.SubscriptionMember;
+import org.example.subchecker.core.entity.User;
+import org.example.subchecker.core.repository.SubscriptionMemberRepository;
+import org.example.subchecker.core.repository.SubscriptionRepository;
+import org.example.subchecker.core.repository.UserRepository;
 import org.example.subchecker.exception.ResourceNotFoundException;
-import org.example.subchecker.repository.*;
 import org.springframework.stereotype.Service;
 
 @Service

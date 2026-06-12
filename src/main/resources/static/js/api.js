@@ -122,3 +122,14 @@ export function resetUserSession(userId) {
         method: 'POST'
     });
 }
+export function logoutAllDevices() {
+    return fetch('/api/web/users/logout-all', {
+        method: 'POST',
+        headers: {
+            'X-Session-Token': localStorage.getItem('sessionToken')
+        }
+    }).then(res => {
+        if (!res.ok) throw new Error("Не удалось выполнить сброс сессий");
+        return res;
+    });
+}

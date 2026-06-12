@@ -3,7 +3,7 @@ package org.example.subchecker.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.subchecker.repository.SubscriptionRepository;
+import org.example.subchecker.core.repository.SubscriptionRepository;
 import org.springframework.stereotype.Service;
 
 @Service

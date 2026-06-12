@@ -3,8 +3,10 @@ package org.example.subchecker.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.subchecker.entity.User;
-import org.example.subchecker.repository.UserRepository;
+import org.example.subchecker.core.entity.BotSession;
+import org.example.subchecker.core.entity.User;
+import org.example.subchecker.core.model.Currency;
+import org.example.subchecker.core.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -55,7 +57,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateDefaultCurrency(Long tgId, org.example.subchecker.model.Currency currency) {
+    public void updateDefaultCurrency(Long tgId, Currency currency) {
         userRepository.findById(tgId).ifPresent(user -> {
             user.setDefaultCurrency(currency);
             userRepository.save(user);
@@ -63,7 +65,7 @@ public class UserService {
     }
 
     @Transactional
-    public void saveSettingsFromSession(Long tgId, org.example.subchecker.entity.BotSession session) {
+    public void saveSettingsFromSession(Long tgId, BotSession session) {
         if (session.getTempPrefTime() != null) {
             updatePreferredTime(tgId, session.getTempPrefTime());
         }

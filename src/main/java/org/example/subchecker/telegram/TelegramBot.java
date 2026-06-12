@@ -2,7 +2,8 @@ package org.example.subchecker.telegram;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.subchecker.telegram.logic.UpdateDispatcher;
+import org.example.subchecker.telegram.config.BotConfig;
+import org.example.subchecker.telegram.dispatcher.UpdateDispatcher;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

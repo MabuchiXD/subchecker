@@ -1,12 +1,11 @@
 package org.example.subchecker.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.subchecker.entity.BotSession; // 🔴 ИМПОРТ ДОБАВЛЕН
-import org.example.subchecker.entity.Subscription;
-import org.example.subchecker.entity.User;
-import org.example.subchecker.repository.BotSessionRepository;
-import org.example.subchecker.repository.SubscriptionRepository;
-import org.example.subchecker.repository.UserRepository;
+import org.example.subchecker.core.entity.Subscription;
+import org.example.subchecker.core.entity.User;
+import org.example.subchecker.core.repository.BotSessionRepository;
+import org.example.subchecker.core.repository.SubscriptionRepository;
+import org.example.subchecker.core.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

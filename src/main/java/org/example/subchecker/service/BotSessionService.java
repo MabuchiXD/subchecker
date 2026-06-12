@@ -3,9 +3,9 @@ package org.example.subchecker.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.example.subchecker.entity.BotSession;
-import org.example.subchecker.model.Currency;
-import org.example.subchecker.repository.BotSessionRepository;
+import org.example.subchecker.core.entity.BotSession;
+import org.example.subchecker.core.model.Currency;
+import org.example.subchecker.core.repository.BotSessionRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -69,7 +69,7 @@ public class BotSessionService {
     }
 
     @Transactional
-    public void saveTempDefaultCurrency(Long userId, org.example.subchecker.model.Currency currency) {
+    public void saveTempDefaultCurrency(Long userId, Currency currency) {
         BotSession session = getSession(userId);
         session.setTempDefaultCurrency(currency);
         botSessionRepository.save(session);

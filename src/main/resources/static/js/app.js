@@ -1,9 +1,10 @@
-import * as api from './api.js';
-import { renderSubscriptions, renderAdminUsers, renderCategoryFilters } from './ui.js';
-import { setupSubModalListeners, openCreateModal } from './subModal.js';
-import { setupUserModalListeners } from './userModal.js';
+import * as api from './api.js?v=1.6';
+import { renderSubscriptions, renderAdminUsers, renderCategoryFilters } from './ui.js?v=1.6';
+import { setupSubModalListeners, openCreateModal } from './subModal.js?v=1.6';
+import { setupUserModalListeners } from './userModal.js?v=1.6';
+import { logoutAllDevices } from './api.js?v=1.6';
 
-const tg = window.Telegram.WebApp;
+const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 if (tg) { tg.ready(); tg.expand(); }
 
 let allSubscriptions = [];
@@ -45,7 +46,7 @@ function setupLoginListener() {
     });
 }
 
-// ЗАПУСК ПРИЛОЖЕНИЯ (ТЕПЕРЬ С ПОЛНОЙ ИНИЦИАЛИЗАЦИЕЙ ПРОФИЛЯ)
+// ЗАПУСК ПРИЛОЖЕНИЯ
 function initializeApplication() {
     fillTimeSelect();
 
@@ -98,7 +99,66 @@ function initializeApplication() {
     document.getElementById('btn-add-sub').addEventListener('click', () => {
         openCreateModal(defaultUserCurrency);
     });
+
+    // Кнопка выхода из аккаунта (С поддержкой Telegram API)
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => {
+            const message = "Вы действительно хотите выйти из аккаунта?";
+
+            // Если запущено внутри Telegram — используем нативный красивый диалог Telegram
+            if (tg && typeof tg.showConfirm === 'function') {
+                tg.showConfirm(message, (ok) => {
+                    if (ok) {
+                        localStorage.removeItem('sessionToken');
+                        window.location.reload();
+                    }
+                });
+            } else {
+                // Если открыли просто как сайт в браузере — используем обычный confirm
+                if (confirm(message)) {
+                    localStorage.removeItem('sessionToken');
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+    // Кнопка выхода со всех устройств (С поддержкой Telegram API)
+    const btnLogoutAll = document.getElementById('btn-logout-all');
+    if (btnLogoutAll) {
+        btnLogoutAll.addEventListener('click', () => {
+            const message = "Вы действительно хотите завершить сессии на всех устройствах?";
+
+            if (tg && typeof tg.showConfirm === 'function') {
+                tg.showConfirm(message, (ok) => {
+                    if (ok) {
+                        logoutAllDevices()
+                            .then(() => {
+                                localStorage.removeItem('sessionToken');
+                                window.location.reload();
+                            })
+                            .catch(err => {
+                                alert("❌ Ошибка: " + err.message);
+                            });
+                    }
+                });
+            } else {
+                if (confirm(message)) {
+                    logoutAllDevices()
+                        .then(() => {
+                            localStorage.removeItem('sessionToken');
+                            window.location.reload();
+                        })
+                        .catch(err => {
+                            alert("❌ Ошибка: " + err.message);
+                        });
+                }
+            }
+        });
+    }
 }
+
 function fillTimeSelect() {
     const select = document.getElementById('setting-pref-time');
     if (!select) return;

@@ -1,9 +1,9 @@
 package org.example.subchecker.telegram.messageServiceTg;
 
-import org.example.subchecker.entity.BotSession;
-import org.example.subchecker.entity.User;
+import org.example.subchecker.core.entity.BotSession;
+import org.example.subchecker.core.entity.User;
 import org.example.subchecker.telegram.botKeyboards.SettingsKeyboards;
-import org.example.subchecker.telegram.stateDiary.CallbackData;
+import org.example.subchecker.telegram.feature.stateDiary.CallbackData;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 

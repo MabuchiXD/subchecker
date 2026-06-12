@@ -1,6 +1,7 @@
 package org.example.subchecker.service;
 
-import org.example.subchecker.entity.User;
+import org.example.subchecker.core.entity.User;
+import org.example.subchecker.telegram.scheduler.NotificationService;
 import org.junit.jupiter.api.Test;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
