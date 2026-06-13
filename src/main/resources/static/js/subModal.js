@@ -1,8 +1,29 @@
-import * as api from './api.js?v=1.8';
+import * as api from './api.js?v=1.9'; // ОБНОВИЛИ ДО ВЕРСИИ 1.9
 
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 let selectedSubscription = null;
 let modalMode = 'EDIT';
+
+// Функция автоматического копирования текста в буфер обмена (работает везде)
+function copyToClipboard(text) {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        navigator.clipboard.writeText(text).catch(err => console.error("Error copying: ", err));
+    } else {
+        // Резервный способ для старых браузеров и закрытых фреймов
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            console.error("Fallback copy failed: ", err);
+        }
+        document.body.removeChild(textarea);
+    }
+}
 
 function getFutureDateString(days) {
     const d = new Date();
@@ -158,14 +179,12 @@ export function setupSubModalListeners(onRefresh) {
         }
     });
 
-    // ОПЛАТИЛ (С БЕЗОПАСНОЙ ПРОВЕРКОЙ ВЕРСИИ TELEGRAM API 🔒)
     document.getElementById('btn-pay').addEventListener('click', () => {
         if (!selectedSubscription) return;
 
         const defaultPeriod = selectedSubscription.periodDays || 30;
         const message = `На какой срок ты продлил подписку ${selectedSubscription.serviceName.toUpperCase()}?`;
 
-        // Проверяем, поддерживает ли клиент версию 6.2+
         if (tg && tg.isVersionAtLeast('6.2') && typeof tg.showPopup === 'function') {
             tg.showPopup({
                 title: "🔄 Продление подписки",
@@ -189,7 +208,6 @@ export function setupSubModalListeners(onRefresh) {
                     .catch(() => alert("❌ Ошибка продления подписки."));
             });
         } else {
-            // Если Telegram API старый (6.0) — откатываемся на стандартный prompt
             const choice = prompt(message, defaultPeriod);
             if (choice === null) return;
 
@@ -210,21 +228,22 @@ export function setupSubModalListeners(onRefresh) {
         }
     });
 
+
     document.getElementById('btn-invite').addEventListener('click', () => {
         if (!selectedSubscription) return;
         api.generateInviteCode(selectedSubscription.id)
             .then(data => {
-                alert(`👥 Код приглашения (перешлите другу):\n\n${data.code}`);
+                const code = data.code;
+                copyToClipboard(code); // Копируем в буфер!
+                alert(`📋 Код скопирован в буфер обмена:\n\n${code}\n\nПросто отправь его другу!`);
             })
             .catch(() => alert("❌ Ошибка генерации кода."));
     });
 
-    // УДАЛИТЬ ПОДПИСКУ (С БЕЗОПАСНОЙ ПРОВЕРКОЙ ВЕРСИИ TELEGRAM API 🔒)
     document.getElementById('btn-delete').addEventListener('click', () => {
         if (!selectedSubscription) return;
         const message = "Вы точно хотите безвозвратно удалить эту подписку?";
 
-        // Проверяем, поддерживает ли клиент версию 6.2+
         if (tg && tg.isVersionAtLeast('6.2') && typeof tg.showConfirm === 'function') {
             tg.showConfirm(message, (ok) => {
                 if (ok) {
@@ -239,7 +258,6 @@ export function setupSubModalListeners(onRefresh) {
                 }
             });
         } else {
-            // Если Telegram API старый (6.0) — откатываемся на стандартный confirm
             if (confirm(message)) {
                 api.deleteSubscription(selectedSubscription.id)
                     .then(res => {

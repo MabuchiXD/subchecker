@@ -1,5 +1,5 @@
-import { openEditModal } from './subModal.js?v=1.8';
-import { openUserModal } from './userModal.js?v=1.8';
+import { openEditModal } from './subModal.js?v=1.9';
+import { openUserModal } from './userModal.js?v=1.9';
 
 // 1. Отрисовка личных подписок текущего юзера
 export function renderSubscriptions(subs, containerId) {
