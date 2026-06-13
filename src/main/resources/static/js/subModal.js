@@ -1,4 +1,4 @@
-import * as api from './api.js';
+import * as api from './api.js?v=1.8';
 
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 let selectedSubscription = null;
@@ -89,7 +89,6 @@ export function setupSubModalListeners(onRefresh) {
         }
     });
 
-    // СОХРАНИТЬ / СОЗДАТЬ (ТЕПЕРЬ С АКТИВНОЙ ЗАЩИТОЙ ОТ ДВОЙНЫХ КЛИКОВ 🔒)
     document.getElementById('btn-save').addEventListener('click', () => {
         const name = document.getElementById('edit-name').value.trim();
         const priceVal = document.getElementById('edit-price').value;
@@ -102,7 +101,6 @@ export function setupSubModalListeners(onRefresh) {
 
         const price = parseFloat(priceVal);
 
-        // 🔒 Блокируем кнопку сохранения перед отправкой запроса
         const btnSave = document.getElementById('btn-save');
         btnSave.disabled = true;
         const originalText = btnSave.innerText;
@@ -129,7 +127,6 @@ export function setupSubModalListeners(onRefresh) {
                 })
                 .catch(() => alert("❌ Ошибка добавления подписки."))
                 .finally(() => {
-                    // Разблокируем кнопку обратно
                     btnSave.disabled = false;
                     btnSave.innerText = originalText;
                 });
@@ -155,34 +152,62 @@ export function setupSubModalListeners(onRefresh) {
                 })
                 .catch(() => alert("❌ Ошибка сохранения."))
                 .finally(() => {
-                    // Разблокируем кнопку обратно
                     btnSave.disabled = false;
                     btnSave.innerText = originalText;
                 });
         }
     });
 
+    // ОПЛАТИЛ (С БЕЗОПАСНОЙ ПРОВЕРКОЙ ВЕРСИИ TELEGRAM API 🔒)
     document.getElementById('btn-pay').addEventListener('click', () => {
         if (!selectedSubscription) return;
 
         const defaultPeriod = selectedSubscription.periodDays || 30;
-        const choice = prompt(`На сколько дней продлить подписку ${selectedSubscription.serviceName.toUpperCase()}?`, defaultPeriod);
-        if (choice === null) return;
+        const message = `На какой срок ты продлил подписку ${selectedSubscription.serviceName.toUpperCase()}?`;
 
-        const days = parseInt(choice.trim());
-        if (isNaN(days) || days <= 0) {
-            alert("⚠️ Введите корректное положительное число дней!");
-            return;
+        // Проверяем, поддерживает ли клиент версию 6.2+
+        if (tg && tg.isVersionAtLeast('6.2') && typeof tg.showPopup === 'function') {
+            tg.showPopup({
+                title: "🔄 Продление подписки",
+                message: message,
+                buttons: [
+                    { id: "30", type: "default", text: "📅 На 30 дней (Месяц)" },
+                    { id: "90", type: "default", text: "🗓 На 90 дней (3 месяца)" },
+                    { id: "cancel", type: "destructive", text: "❌ Отмена" }
+                ]
+            }, (buttonId) => {
+                if (buttonId === 'cancel') return;
+                const days = parseInt(buttonId);
+
+                api.renewSubscription(selectedSubscription.id, days)
+                    .then(res => {
+                        if (!res.ok) throw new Error();
+                        alert(`🔄 Подписка успешно продлена на ${days} дней!`);
+                        closeModal();
+                        onRefresh();
+                    })
+                    .catch(() => alert("❌ Ошибка продления подписки."));
+            });
+        } else {
+            // Если Telegram API старый (6.0) — откатываемся на стандартный prompt
+            const choice = prompt(message, defaultPeriod);
+            if (choice === null) return;
+
+            const days = parseInt(choice.trim());
+            if (isNaN(days) || days <= 0) {
+                alert("⚠️ Введите корректное положительное число дней!");
+                return;
+            }
+
+            api.renewSubscription(selectedSubscription.id, days)
+                .then(res => {
+                    if (!res.ok) throw new Error();
+                    alert(`🔄 Подписка успешно продлена на ${days} дней!`);
+                    closeModal();
+                    onRefresh();
+                })
+                .catch(() => alert("❌ Ошибка продления подписки."));
         }
-
-        api.renewSubscription(selectedSubscription.id, days)
-            .then(res => {
-                if (!res.ok) throw new Error();
-                alert(`🔄 Подписка успешно продлена на ${days} дней!`);
-                closeModal();
-                onRefresh();
-            })
-            .catch(() => alert("❌ Ошибка продления подписки."));
     });
 
     document.getElementById('btn-invite').addEventListener('click', () => {
@@ -194,17 +219,37 @@ export function setupSubModalListeners(onRefresh) {
             .catch(() => alert("❌ Ошибка генерации кода."));
     });
 
+    // УДАЛИТЬ ПОДПИСКУ (С БЕЗОПАСНОЙ ПРОВЕРКОЙ ВЕРСИИ TELEGRAM API 🔒)
     document.getElementById('btn-delete').addEventListener('click', () => {
         if (!selectedSubscription) return;
-        if (confirm("Вы точно хотите безвозвратно удалить эту подписку?")) {
-            api.deleteSubscription(selectedSubscription.id)
-                .then(res => {
-                    if (!res.ok) throw new Error();
-                    alert("🗑 Подписка успешно удалена!");
-                    closeModal();
-                    onRefresh();
-                })
-                .catch(() => alert("❌ Ошибка удаления подписки."));
+        const message = "Вы точно хотите безвозвратно удалить эту подписку?";
+
+        // Проверяем, поддерживает ли клиент версию 6.2+
+        if (tg && tg.isVersionAtLeast('6.2') && typeof tg.showConfirm === 'function') {
+            tg.showConfirm(message, (ok) => {
+                if (ok) {
+                    api.deleteSubscription(selectedSubscription.id)
+                        .then(res => {
+                            if (!res.ok) throw new Error();
+                            alert("🗑 Подписка успешно удалена!");
+                            closeModal();
+                            onRefresh();
+                        })
+                        .catch(() => alert("❌ Ошибка удаления подписки."));
+                }
+            });
+        } else {
+            // Если Telegram API старый (6.0) — откатываемся на стандартный confirm
+            if (confirm(message)) {
+                api.deleteSubscription(selectedSubscription.id)
+                    .then(res => {
+                        if (!res.ok) throw new Error();
+                        alert("🗑 Подписка успешно удалена!");
+                        closeModal();
+                        onRefresh();
+                    })
+                    .catch(() => alert("❌ Ошибка удаления подписки."));
+            }
         }
     });
 }

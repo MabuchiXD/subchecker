@@ -1,8 +1,8 @@
-import * as api from './api.js?v=1.6';
-import { renderSubscriptions, renderAdminUsers, renderCategoryFilters } from './ui.js?v=1.6';
-import { setupSubModalListeners, openCreateModal } from './subModal.js?v=1.6';
-import { setupUserModalListeners } from './userModal.js?v=1.6';
-import { logoutAllDevices } from './api.js?v=1.6';
+import * as api from './api.js?v=1.8';
+import { renderSubscriptions, renderAdminUsers, renderCategoryFilters } from './ui.js?v=1.8';
+import { setupSubModalListeners, openCreateModal } from './subModal.js?v=1.8';
+import { setupUserModalListeners } from './userModal.js?v=1.8';
+import { logoutAllDevices } from './api.js?v=1.8';
 
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 if (tg) { tg.ready(); tg.expand(); }

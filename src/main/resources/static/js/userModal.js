@@ -1,5 +1,5 @@
-import * as api from './api.js';
-import { openEditModal } from './subModal.js';
+import * as api from './api.js?v=1.8';
+import { openEditModal } from './subModal.js?v=1.8';
 
 let selectedUser = null;
 
