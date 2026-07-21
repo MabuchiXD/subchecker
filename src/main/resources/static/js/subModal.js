@@ -1,15 +1,14 @@
-import * as api from './api.js?v=1.9'; // ОБНОВИЛИ ДО ВЕРСИИ 1.9
+import * as api from './api.js?v=2.0';
 
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 let selectedSubscription = null;
 let modalMode = 'EDIT';
 
-// Функция автоматического копирования текста в буфер обмена (работает везде)
+// Функция автоматического копирования текста в буфер обмена
 function copyToClipboard(text) {
     if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
         navigator.clipboard.writeText(text).catch(err => console.error("Error copying: ", err));
     } else {
-        // Резервный способ для старых браузеров и закрытых фреймов
         const textarea = document.createElement('textarea');
         textarea.value = text;
         textarea.style.position = 'fixed';
@@ -63,6 +62,9 @@ export function openEditModal(sub) {
     modalMode = 'EDIT';
     selectedSubscription = sub;
 
+    const currentUserId = window.currentUserId;
+    const isOwner = (sub.ownerId === currentUserId);
+
     document.getElementById('modal-title').innerText = `⚙️ ${sub.serviceName.toUpperCase()}`;
     document.getElementById('edit-name').value = sub.serviceName;
     document.getElementById('edit-price').value = sub.price;
@@ -82,8 +84,26 @@ export function openEditModal(sub) {
 
     document.getElementById('bomber-admin-section').style.display = 'block';
     document.getElementById('btn-pay').style.display = 'block';
-    document.getElementById('btn-invite').style.display = 'block';
-    document.getElementById('btn-delete').style.display = 'block';
+
+    const btnDelete = document.getElementById('btn-delete');
+    const btnInvite = document.getElementById('btn-invite');
+
+    if (isOwner) {
+        btnDelete.innerText = "🗑 Удалить подписку";
+        btnDelete.style.display = 'block';
+        btnInvite.style.display = 'block';
+
+        // Текст кнопки генерации/сброса инвайт-кода
+        if (sub.inviteCode) {
+            btnInvite.innerText = `🚫 Сбросить код (${sub.inviteCode})`;
+        } else {
+            btnInvite.innerText = "👥 Создать код группы";
+        }
+    } else {
+        btnDelete.innerText = "🚪 Выйти из группы";
+        btnDelete.style.display = 'block';
+        btnInvite.style.display = 'none';
+    }
 
     document.getElementById('edit-bomber-active').checked = sub.isHardcore || false;
     document.getElementById('edit-bomber-interval').value = sub.bomberIntervalMinutes || "60";
@@ -228,25 +248,70 @@ export function setupSubModalListeners(onRefresh) {
         }
     });
 
-
+    // 👥 УПРАВЛЕНИЕ ИНВАЙТ-КОДОМ (Создание / Сброс)
     document.getElementById('btn-invite').addEventListener('click', () => {
         if (!selectedSubscription) return;
-        api.generateInviteCode(selectedSubscription.id)
-            .then(data => {
-                const code = data.code;
-                copyToClipboard(code); // Копируем в буфер!
-                alert(`📋 Код скопирован в буфер обмена:\n\n${code}\n\nПросто отправь его другу!`);
-            })
-            .catch(() => alert("❌ Ошибка генерации кода."));
+
+        if (selectedSubscription.inviteCode) {
+            // ЛОГИКА СБРОСА КОДА
+            const message = `Вы действительно хотите аннулировать инвайт-код ${selectedSubscription.inviteCode}?`;
+
+            const doRevoke = () => {
+                api.revokeInviteCode(selectedSubscription.id)
+                    .then(() => {
+                        alert("🚫 Инвайт-код успешно аннулирован!");
+                        selectedSubscription.inviteCode = null;
+                        document.getElementById('btn-invite').innerText = "👥 Создать код группы";
+                        onRefresh();
+                    })
+                    .catch(() => alert("❌ Ошибка сброса кода."));
+            };
+
+            if (tg && tg.isVersionAtLeast('6.2') && typeof tg.showConfirm === 'function') {
+                tg.showConfirm(message, (ok) => { if (ok) doRevoke(); });
+            } else {
+                if (confirm(message)) doRevoke();
+            }
+
+        } else {
+            // ЛОГИКА СОЗДАНИЯ КОДА
+            api.generateInviteCode(selectedSubscription.id)
+                .then(data => {
+                    const code = data.code;
+                    selectedSubscription.inviteCode = code;
+                    copyToClipboard(code);
+                    document.getElementById('btn-invite').innerText = `🚫 Сбросить код (${code})`;
+                    alert(`📋 Код скопирован в буфер обмена:\n\n${code}\n\nПросто отправь его другу!`);
+                    onRefresh();
+                })
+                .catch(() => alert("❌ Ошибка генерации кода."));
+        }
     });
 
+    // КНОПКА УДАЛЕНИЯ / ВЫХОДА ИЗ ГРУППЫ
     document.getElementById('btn-delete').addEventListener('click', () => {
         if (!selectedSubscription) return;
-        const message = "Вы точно хотите безвозвратно удалить эту подписку?";
 
-        if (tg && tg.isVersionAtLeast('6.2') && typeof tg.showConfirm === 'function') {
-            tg.showConfirm(message, (ok) => {
-                if (ok) {
+        const isOwner = (selectedSubscription.ownerId === window.currentUserId);
+
+        if (isOwner) {
+            const message = "Вы точно хотите безвозвратно удалить эту подписку?";
+
+            if (tg && tg.isVersionAtLeast('6.2') && typeof tg.showConfirm === 'function') {
+                tg.showConfirm(message, (ok) => {
+                    if (ok) {
+                        api.deleteSubscription(selectedSubscription.id)
+                            .then(res => {
+                                if (!res.ok) throw new Error();
+                                alert("🗑 Подписка успешно удалена!");
+                                closeModal();
+                                onRefresh();
+                            })
+                            .catch(() => alert("❌ Ошибка удаления подписки."));
+                    }
+                });
+            } else {
+                if (confirm(message)) {
                     api.deleteSubscription(selectedSubscription.id)
                         .then(res => {
                             if (!res.ok) throw new Error();
@@ -256,17 +321,34 @@ export function setupSubModalListeners(onRefresh) {
                         })
                         .catch(() => alert("❌ Ошибка удаления подписки."));
                 }
-            });
+            }
         } else {
-            if (confirm(message)) {
-                api.deleteSubscription(selectedSubscription.id)
-                    .then(res => {
-                        if (!res.ok) throw new Error();
-                        alert("🗑 Подписка успешно удалена!");
-                        closeModal();
-                        onRefresh();
-                    })
-                    .catch(() => alert("❌ Ошибка удаления подписки."));
+            const message = "Вы действительно хотите покинуть эту группу подписки?";
+
+            if (tg && tg.isVersionAtLeast('6.2') && typeof tg.showConfirm === 'function') {
+                tg.showConfirm(message, (ok) => {
+                    if (ok) {
+                        api.leaveSubscription(selectedSubscription.id)
+                            .then(res => {
+                                if (!res.ok) throw new Error();
+                                alert("🚪 Вы успешно вышли из группы!");
+                                closeModal();
+                                onRefresh();
+                            })
+                            .catch(() => alert("❌ Ошибка выхода из группы."));
+                    }
+                });
+            } else {
+                if (confirm(message)) {
+                    api.leaveSubscription(selectedSubscription.id)
+                        .then(res => {
+                            if (!res.ok) throw new Error();
+                            alert("🚪 Вы успешно вышли из группы!");
+                            closeModal();
+                            onRefresh();
+                        })
+                        .catch(() => alert("❌ Ошибка выхода из группы."));
+                }
             }
         }
     });

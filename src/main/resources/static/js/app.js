@@ -54,6 +54,7 @@ function initializeApplication() {
     api.fetchMe()
         .then(me => {
             currentUserId = me.telegramId;
+            window.currentUserId = me.telegramId;
 
             // 🟢 ПОКАЗЫВАЕМ РОДИТЕЛЬСКИЙ КОНТЕЙНЕР ВКЛАДОК!
             document.getElementById('admin-toggle-container').style.display = 'flex';

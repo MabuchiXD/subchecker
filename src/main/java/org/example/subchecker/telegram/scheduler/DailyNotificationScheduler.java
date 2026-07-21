@@ -11,9 +11,7 @@ import org.example.subchecker.telegram.feature.subscription.SubscriptionFormatte
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 
 @Component
 @RequiredArgsConstructor
@@ -47,7 +45,8 @@ public class DailyNotificationScheduler {
     }
 
     private void checkDatesAndSend(SubscriptionMember member) {
-        LocalDate today = LocalDate.now();
+        ZonedDateTime userNow = ZonedDateTime.now(ZoneOffset.UTC).plusHours(member.getUser().getTimezoneOffset());
+        LocalDate today = userNow.toLocalDate();
         LocalDate next = member.getSubscription().getNextPaymentDate();
         String prefix = null;
 

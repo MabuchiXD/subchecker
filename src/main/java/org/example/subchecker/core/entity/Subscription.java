@@ -68,6 +68,6 @@ public class Subscription {
     public void renew(int days) {
         this.lastPaymentDate = LocalDate.now();
         this.nextPaymentDate = this.nextPaymentDate.plusDays(days);
-        this.isAcknowledged = true;
+        this.isAcknowledged = false;
     }
 }

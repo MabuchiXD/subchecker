@@ -123,6 +123,11 @@ public class SubscriptionRestController {
         subscriptionService.deleteSubscription(subId);
         return ResponseEntity.ok().build();
     }
+    @PostMapping("/{subId}/revoke-invite")
+    public ResponseEntity<Void> revokeInviteCode(@PathVariable Long subId) {
+        subscriptionService.revokeInviteCode(subId);
+        return ResponseEntity.ok().build();
+    }
 
     @PutMapping("/{subId}/edit")
     public ResponseEntity<Void> editSubscription(

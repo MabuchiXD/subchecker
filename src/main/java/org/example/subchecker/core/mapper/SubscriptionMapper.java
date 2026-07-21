@@ -6,6 +6,8 @@ import org.example.subchecker.core.entity.SubscriptionMember;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Component
@@ -36,6 +38,7 @@ public class SubscriptionMapper {
 
     private Long calculateDaysLeft(LocalDate nextPaymentDate) {
         if (nextPaymentDate == null) return 0L;
-        return ChronoUnit.DAYS.between(LocalDate.now(), nextPaymentDate);
+        LocalDate today = ZonedDateTime.now(ZoneOffset.UTC).plusHours(3).toLocalDate();
+        return ChronoUnit.DAYS.between(today, nextPaymentDate);
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -20,23 +22,27 @@ public class BomberScheduler {
     private final SubscriptionMemberRepository memberRepository;
     private final @org.springframework.context.annotation.Lazy TelegramBot telegramBot;
 
-    @Scheduled(cron = "0 0/15 * * * *") // Каждые 15 минут
+    @Scheduled(cron = "0 0/15 * * * *") // Проверка каждые 15 минут
     @Transactional
     public void run() {
         log.info("💀 БОМБЕР на охоте...");
         var targets = memberRepository.findAllByIsHardcoreTrue();
-        LocalDate today = LocalDate.now();
 
         for (SubscriptionMember member : targets) {
             var sub = member.getSubscription();
 
-            if (sub.getNextPaymentDate().isBefore(today) && !sub.getIsAcknowledged()) {
+            // Рассчитываем сегодняшнее число с учетом часового пояса текущего пользователя
+            ZonedDateTime userNow = ZonedDateTime.now(ZoneOffset.UTC).plusHours(member.getUser().getTimezoneOffset());
+            LocalDate today = userNow.toLocalDate();
+
+            if (!sub.getNextPaymentDate().isAfter(today) && !sub.getIsAcknowledged() && sub.getIsActive()) {
                 if (shouldBomb(member)) {
                     telegramBot.sendSimple(member.getUser().getTelegramId(),
                             "💀 *БОМБЕР:* Ты забыл оплатить *" + sub.getServiceName() + "*!");
 
                     member.setLastBomberNotifySent(LocalDateTime.now());
                     memberRepository.save(member);
+                    log.info("💥 Бомбер сработал для пользователя {}", member.getUser().getTelegramId());
                 }
             }
         }

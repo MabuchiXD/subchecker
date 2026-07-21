@@ -133,3 +133,8 @@ export function logoutAllDevices() {
         return res;
     });
 }
+export function revokeInviteCode(subId) {
+    return request(`/api/web/subscriptions/${subId}/revoke-invite`, {
+        method: 'POST'
+    });
+}
